@@ -1495,3 +1495,6 @@ body.admin-bar .search-overlay {
   border-bottom: none;
   margin-bottom: 0;
 }
+.img-border img{
+  border:2px solid #ddd;
+}
