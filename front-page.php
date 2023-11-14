@@ -35,7 +35,7 @@
 
           while($homepageEvents->have_posts()) {
             $homepageEvents->the_post(); 
-            get_template_part('template-parts/event','template');
+            get_template_part('template-parts/content',get_post_type());
           }
         ?>
         
