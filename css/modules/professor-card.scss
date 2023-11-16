@@ -1,6 +1,8 @@
 .professor-cards {
   margin: 0;
   padding: 0;
+  column-count: 2;
+
 
   .search-overlay & {
     padding-top: 21px;

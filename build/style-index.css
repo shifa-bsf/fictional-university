@@ -1240,6 +1240,8 @@ body.admin-bar .search-overlay {
 .professor-cards {
   margin: 0;
   padding: 0;
+  -moz-column-count: 2;
+       column-count: 2;
 }
 .search-overlay .professor-cards {
   padding-top: 21px;
