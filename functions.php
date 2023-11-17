@@ -11,7 +11,8 @@ function university_files()
   wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
   wp_localize_script('main-university-js','universityData',array(
     'root_url' => get_site_url(),
-  ));
+    'nonce' => wp_create_nonce('wp_rest')
+  ));//wp_localize_script used to make PHP data available to JavaScript code.
 }
 
 add_action('wp_enqueue_scripts', 'university_files');
@@ -65,3 +66,50 @@ function university_custom_rest(){
     ));
 }
 add_action('rest_api_init', 'university_custom_rest');
+
+//Redirect subsciber user to home page
+add_action('admin_init','redirectSubscriber');
+function redirectSubscriber (){
+  $currentUser = wp_get_current_user();
+  if(count($currentUser->roles)==1 AND $currentUser->roles[0] == 'subscriber'){
+    wp_redirect(site_url('/'));
+    exit;
+  }
+}
+//hide admin bar for subscribers
+add_action('wp_loaded','hideAdminbar');
+function hideAdminbar(){
+  $currentUser = wp_get_current_user();
+  if(count($currentUser->roles)==1 AND $currentUser->roles[0] == 'subscriber'){
+    show_admin_bar(false);
+  }
+}
+
+//custom login page
+add_filter('login_headerurl', 'setLoginHeaderUrl');
+function setLoginHeaderUrl(){
+  return esc_url(site_url('/'));
+}
+
+add_action('login_enqueue_scripts', 'setLoginCSS');
+function setLoginCSS() {
+  wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+  wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+  wp_enqueue_style('university_main_styles', get_theme_file_uri('/build/style-index.css'));
+  wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
+}
+
+add_filter('login_headertitle', 'setLoginTitle');
+
+function setLoginTitle() {
+  return get_bloginfo('name');
+}
+
+add_filter('wp_insert_post_data', 'makeNotePrivate');
+
+function makeNotePrivate($data){
+  if($data['post_type']=='note' AND $data['post_status'] !== 'trash'){
+    $data['post_status'] = 'private';
+  }
+  return $data;
+}

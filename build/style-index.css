@@ -705,6 +705,7 @@ body.login {
 }
 
 /* Reveal and Hide Fade Transitions */
+/*
 #my-notes {
   position: relative;
 }
@@ -731,7 +732,7 @@ body.login {
   right: 0;
   opacity: 0;
 }
-
+*/
 .site-header {
   z-index: 3;
   position: absolute;

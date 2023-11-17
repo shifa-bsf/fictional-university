@@ -69,7 +69,7 @@ function universitySearchResult($data){
         foreach($results['program'] as $item) {
           array_push($programsMetaQuery, array(
               'key' => 'related_program',
-              'compare' => 'IN',
+              'compare' => 'LIKE',
               'value' => '"' . $item['id'] . '"'
             ));
         }

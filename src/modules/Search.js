@@ -118,7 +118,7 @@ class Search {
                   ${results.program.length ? "</ul>" : ""}
       
                   <h2 class="search-overlay__section-title">Professors</h2>
-                  ${results.professor.length ? '<ul class="professor-cards">' : `<p>No professor match that search. <a href="${universityData.root_url}/event">View all event</a></p>`}
+                  ${results.professor.length ? '<ul class="professor-cards">' : `<p>No professor match that search. </p>`}
                   ${results.professor.map(item => `
                   <li class="professor-card__list-item">
                         <a class="professor-card" href="${item.link}">
