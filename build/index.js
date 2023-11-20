@@ -2066,6 +2066,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/HeroSlider */ "./src/modules/HeroSlider.js");
 /* harmony import */ var _modules_Search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/Search */ "./src/modules/Search.js");
 /* harmony import */ var _modules_MyNotes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/MyNotes */ "./src/modules/MyNotes.js");
+/* harmony import */ var _modules_Like__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/Like */ "./src/modules/Like.js");
+
 
 
 
@@ -2077,6 +2079,7 @@ const mobileMenu = new _modules_MobileMenu__WEBPACK_IMPORTED_MODULE_1__["default
 const heroSlider = new _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__["default"]();
 const liveSearch = new _modules_Search__WEBPACK_IMPORTED_MODULE_3__["default"]();
 const myNotes = new _modules_MyNotes__WEBPACK_IMPORTED_MODULE_4__["default"]();
+const like = new _modules_Like__WEBPACK_IMPORTED_MODULE_5__["default"]();
 
 /***/ }),
 
@@ -2119,6 +2122,76 @@ class HeroSlider {
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (HeroSlider);
+
+/***/ }),
+
+/***/ "./src/modules/Like.js":
+/*!*****************************!*\
+  !*** ./src/modules/Like.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+class Like {
+  constructor() {
+    (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults).headers.common["X-WP-Nonce"] = universityData.nonce;
+    this.events();
+  }
+  events() {
+    document.querySelector(".like-box").addEventListener("click", e => this.likeDispatcher(e));
+  }
+  likeDispatcher(e) {
+    var currentLikeBox = e.target.closest(".like-box");
+    if (currentLikeBox.getAttribute("data-exists") == "yes") {
+      this.deleteLike(currentLikeBox);
+    } else {
+      this.createLike(currentLikeBox);
+    }
+  }
+  async createLike(e) {
+    var data = {
+      'professorId': e.getAttribute("data-professor")
+    };
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0___default().post(universityData.root_url + "/wp-json/university/v1/likes/", data);
+      console.log(response);
+      e.setAttribute("data-exists", "yes");
+      var likeCount = parseInt(e.querySelector(".like-count").innerHTML, 10);
+      likeCount++;
+      e.querySelector(".like-count").innerHTML = likeCount;
+      e.setAttribute("data-like", response.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  async deleteLike(e) {
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        url: universityData.root_url + "/wp-json/university/v1/likes/",
+        method: 'delete',
+        data: {
+          "like": e.getAttribute("data-like")
+        }
+      });
+      e.setAttribute("data-exists", "no");
+      var likeCount = parseInt(e.querySelector(".like-count").innerHTML, 10);
+      likeCount--;
+      e.querySelector(".like-count").innerHTML = likeCount;
+      e.setAttribute("data-like", "");
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Like);
 
 /***/ }),
 
