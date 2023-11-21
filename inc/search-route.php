@@ -25,6 +25,7 @@ function universitySearchResult($data){
        
         if(get_post_type() == 'post'){
             array_push($results['blog'],array(
+                'id' => get_the_id(),
                 'title'=>get_the_title(),
                 'link'=>get_the_permalink(),
                 'author'=>get_the_author()
@@ -32,6 +33,7 @@ function universitySearchResult($data){
         }
         if(get_post_type() == 'page'){
             array_push($results['page'],array(
+                'id' => get_the_id(),
                 'title'=>get_the_title(),
                 'link'=>get_the_permalink(),
             ));
@@ -39,6 +41,7 @@ function universitySearchResult($data){
         if(get_post_type() == 'event'){
             $eventDate = new DateTime(get_field('event_date'));
             array_push($results['event'],array(
+                'id' => get_the_id(),
                 'title'=>get_the_title(),
                 'link'=>get_the_permalink(),
                 'month'=> $eventDate->format('M'),
@@ -47,10 +50,20 @@ function universitySearchResult($data){
         }
         if(get_post_type() == 'professor'){
             array_push($results['professor'],array(
+                'id' => get_the_id(),
                 'title'=>get_the_title(),
                 'link'=>get_the_permalink(),
-                'image'=>get_the_post_thumbnail_url(0,'professorLandscape')
+                'image'=>get_the_post_thumbnail_url(0,'professorLandscape'),
             ));
+            if(get_field('related_program')){
+                foreach( get_field('related_program') as $related_program ): 
+                    array_push($results['program'],array(
+                        'title'=>get_the_title($related_program->ID ),
+                        'link'=>get_the_permalink($related_program->ID ),
+                        'id' => get_the_id($related_program->ID )
+                    ));
+                endforeach;
+            }
         }
         if(get_post_type() == 'program'){
             array_push($results['program'],array(
@@ -84,6 +97,7 @@ function universitySearchResult($data){
     
             if (get_post_type() == 'professor') {
                 array_push($results['professor'], array(
+                'id' => get_the_id(),
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
                 'image' => get_the_post_thumbnail_url(0, 'professorLandscape')
@@ -93,6 +107,7 @@ function universitySearchResult($data){
             if(get_post_type() == 'event'){
                 $eventDate = new DateTime(get_field('event_date'));
                 array_push($results['event'],array(
+                    'id' => get_the_id(),
                     'title'=>get_the_title(),
                     'link'=>get_the_permalink(),
                     'month'=> $eventDate->format('M'),
@@ -101,7 +116,14 @@ function universitySearchResult($data){
             }
         }
       }
+    
+    // Compare specific properties of your objects or elements
+    function customCompare($a, $b) {
+        return $a['id'] <=> $b['id'];
+    }
+    
     $results['professor'] = array_values(array_unique($results['professor'], SORT_REGULAR));
     $results['event'] = array_values(array_unique($results['event'], SORT_REGULAR));
+    $results['program'] = array_values(array_unique($results['program'], SORT_REGULAR));
     return $results;
 }
